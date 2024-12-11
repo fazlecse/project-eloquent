@@ -12,8 +12,24 @@ class StudentController extends Controller
      */
     public function index()
     {
+
         $students = student::all();
-        return view("welcome", compact('students'));
+        // $students= student::find([2,4],['name','email']);
+        // $students=student::count();
+        // $students=student::where([
+        //             ['city','Delhi'],
+        //             ['age','>',19]
+        //         ])->get();
+        // $students=student::where('city','delhi')
+        //                     ->orwhere('age','>',20)->get();
+        // $students=student::whereCity('delhi')
+        //                     ->whereAge(20)
+        //                     ->select('name','email as User Email')
+        //                     // ->dd();
+        //                     // ->ddRawSql();
+        //                     ->get();
+        // return $students;
+        return view('home', compact('students'));
 
         // foreach ($students as $student) {
         //     echo $student->name . "<br>";
@@ -25,7 +41,7 @@ class StudentController extends Controller
      */
     public function create()
     {
-        //
+        return view('adduser');
     }
 
     /**
@@ -33,7 +49,26 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // simple way to save data in database
+        // $student = new Student;
+
+        // $student->name = $request->username;
+        // $student->email = $request->useremail;
+        // $student->age = $request->userage;
+        // $student->city = $request->usercity;
+
+        // $student->save();
+        
+        // mass data save to database
+        student::create([
+            'name'=> $request->username,
+            'email'=> $request->useremail,
+            'age'=> $request->userage,
+            'city'=> $request->usercity,
+        ]);
+
+        return redirect()->route('student.index')
+                        ->with('status', 'New User Added Successfully');
     }
 
     /**
@@ -41,7 +76,8 @@ class StudentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $students = student::find($id);
+        return view('viewuser', compact('students'));
     }
 
     /**
@@ -49,7 +85,7 @@ class StudentController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('updateuser');
     }
 
     /**
