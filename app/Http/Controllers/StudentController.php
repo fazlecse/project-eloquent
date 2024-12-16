@@ -13,7 +13,7 @@ class StudentController extends Controller
     public function index()
     {
 
-        $students = student::all();
+        $students = student::simplepaginate(4);
         // $students= student::find([2,4],['name','email']);
         // $students=student::count();
         // $students=student::where([
@@ -58,7 +58,14 @@ class StudentController extends Controller
         // $student->city = $request->usercity;
 
         // $student->save();
-        
+
+        $request->validate([
+            'username'=> 'required|string',
+            'useremail'=> 'required|email',
+            'userage'=> 'required|numeric',
+            'usercity'=> 'required|alpha'
+        ]);
+
         // mass data save to database
         student::create([
             'name'=> $request->username,
@@ -84,8 +91,8 @@ class StudentController extends Controller
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
-    {
-        return view('updateuser');
+    {   $users=student::find($id);
+        return view('updateuser', compact('users'));
     }
 
     /**
@@ -93,7 +100,32 @@ class StudentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // simple way to save data in database
+        // $student=student::find($id);
+        // $student->name = $request->username;
+        // $student->email = $request->useremail;
+        // $student->age = $request->userage;
+        // $student->city = $request->usercity;
+        // $student->save();
+
+        $request->validate([
+            'username'=> 'required|string',
+            'useremail'=> 'required|email',
+            'userage'=> 'required|numeric',
+            'usercity'=> 'required|alpha'
+        ]);
+
+        $student=student::where('id',$id)
+                        ->update([
+                        'name'=> $request->username,
+                        'email'=> $request->useremail,
+                        'city' => $request->usercity,
+                        'age' => $request->userage
+        ]);
+
+        return redirect()->route('student.index')
+        ->with('status','User data updated successfully');
+
     }
 
     /**
@@ -101,6 +133,14 @@ class StudentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // $student=student::find($id);
+        // $student->delete();
+
+        // student::destroy($id);
+        
+        student::truncate();
+
+        return redirect()->route('student.index')
+        ->with('status','User data deleted successfully');
     }
 }

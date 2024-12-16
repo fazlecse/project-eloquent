@@ -25,9 +25,19 @@
                 <td>{{ $student->age }}</td>
                 <td>{{ $student->city }}</td>
                 <td><a href="{{ route('student.show', $student->id) }}" class="btn btn-primary btn-sm">View</a></td>
-                <td><a href="" class="btn btn-danger btn-sm">Delete</a></td>
+                <td>
+                    <form action="{{ route('student.destroy', $student->id) }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+
+                </td>
                 <td><a href="{{ route('student.edit', $student->id) }}" class="btn btn-warning btn-sm">Update</a></td>
             </tr>
         @endforeach
     </table>
+    <div class="mt-4">
+        {{ $students->links() }}
+    </div>
 @endsection
